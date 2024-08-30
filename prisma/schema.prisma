@@ -1,0 +1,261 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Rol {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+
+  name String?
+  code String  @unique
+
+  users_rol User[] @relation(name: "UserToRol")
+
+  @@map("tbl_rol")
+}
+
+model AcademicProgram {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+
+  name String?
+  code String? @unique
+
+  users_program User[] @relation(name: "UserToProgramAcademic")
+
+  @@map("tbl_academic_program")
+}
+
+model ListType {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+
+  code        String?    @unique
+  name        String
+  description String
+  meta        String?
+  listItem    ListItem[] @relation(name: "ListTypeListItem")
+
+  @@map("list_type")
+}
+
+model ListItem {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+
+  listType    ListType @relation(name: "ListTypeListItem", fields: [listType_id], references: [id])
+  listType_id String @db.Uuid
+  code        String?  @unique
+  name        String
+  description String
+  meta        String?
+  order       Int?
+
+  users_rol         User[]         @relation(name: "UserToRh")
+  car_types         Car[]          @relation(name: "CarToType")
+  transactions_type Transactions[] @relation(name: "TransactionToType")
+
+  @@map("tbl_list_item")
+}
+
+model User {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+
+  full_name    String?
+  last_name    String?
+  email        String    @unique
+  password     String
+  code_student String    @unique
+  rol          Rol      @relation(name: "UserToRol", fields: [rol_id], references: [id])
+  rol_id       String @db.Uuid
+  phone        String?
+  birthdate    DateTime?
+  address      String?
+  rh           ListItem? @relation(name: "UserToRh", fields: [rh_id], references: [id])
+  rh_id        String? @db.Uuid
+
+  program_academic    AcademicProgram? @relation(name: "UserToProgramAcademic", fields: [program_academic_id], references: [id])
+  program_academic_id String? @db.Uuid
+
+  bus_driver BusDriver[] @relation(name: "BusDriverToUser")
+  user_qr    UserQR[]    @relation(name: "UserQRToUser")
+
+  transaction_user Transactions[] @relation(name: "TransactionToUser")
+
+  @@map("tbl_user")
+}
+
+model Car {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+
+  type    ListItem? @relation(name: "CarToType", fields: [type_id], references: [id])
+  type_id String @db.Uuid
+
+  bus_driver BusDriver[] @relation(name: "BusDriverToCar")
+  driver_id  String @db.Uuid
+
+  @@map("tbl_car")
+}
+
+model BusDriver {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+
+  name  String?
+  placa String
+  color String
+  size  Int
+
+  car    Car?   @relation(name: "BusDriverToCar", fields: [car_id], references: [id])
+  car_id String @db.Uuid
+
+  driver    User?   @relation(name: "BusDriverToUser", fields: [driver_id], references: [id])
+  driver_id String @db.Uuid
+
+  route    CarRoute? @relation(name: "BusDriveCarRoute", fields: [route_id], references: [id])
+  route_id String @db.Uuid
+
+  @@map("tbl_bus_driver")
+}
+
+model UserQR {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+
+  date_user DateTime?
+  code_qr   String
+  status    Boolean
+
+  user    User?   @relation(name: "UserQRToUser", fields: [user_id], references: [id])
+  user_id String @db.Uuid
+
+  @@map("tbl_user_qr")
+}
+
+model CarRoute {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+
+  schedule_start DateTime?
+  schedule_end   DateTime
+  longitude      Int
+  lactitude      Int
+  order          Int
+  bus_driver     BusDriver[] @relation(name: "BusDriveCarRoute")
+
+  @@map("tbl_car_route")
+}
+
+model Plans {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+
+  name          String?
+  amount_perday Float
+  equals_day    Int
+
+  transaction_plan Transactions[] @relation(name: "TransactionToPlan")
+
+  @@map("tbl_plans")
+}
+
+model Transactions {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+
+  code         String?
+  status       String
+  date_payment String
+
+  amount         Float
+  equal_day      Int
+  amount_per_day Int
+
+  type_payment    ListItem? @relation(name: "TransactionToType", fields: [type_payment_id], references: [id])
+  type_payment_id String @db.Uuid
+
+  user    User?   @relation(name: "TransactionToUser", fields: [user_id], references: [id])
+  user_id String @db.Uuid
+
+  plan    Plans?  @relation(name: "TransactionToPlan", fields: [plan_id], references: [id])
+  plan_id String @db.Uuid
+
+  transaction_plan UserPlan[] @relation(name: "UserPlanActivate")
+
+  @@map("tbl_transacions")
+}
+
+model UserPlan {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+
+  status     String
+  date_start String
+  date_end   String
+
+  transaction    Transactions? @relation(name: "UserPlanActivate", fields: [transaction_id], references: [id])
+  transaction_id String @db.Uuid
+
+  @@map("tbl_user_plan")
+}
