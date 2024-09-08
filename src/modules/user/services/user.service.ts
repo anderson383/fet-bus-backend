@@ -24,8 +24,9 @@ export class UserService {
 
     const findUser = await this.getByEmail(userData.email)
     const findUserCode = await this.getByCodeStudent(userData.code_student)
+    const findUserDocument = await this.getByDocument(userData.document)
 
-    if (findUser || findUserCode) {
+    if (findUser || findUserCode || findUserDocument) {
       throw new HttpException('El usuario ya existe', 400)
     }
     const roleStudent = await this.getRolByCode(ROLES.STUDENT);
@@ -73,6 +74,19 @@ export class UserService {
     return this.prisma.user.findUnique({
       where: {
         code_student
+      }
+    })
+  }
+
+  /**
+   * Busca un usuario por su documento
+   * @param document Documento del usuario
+   * @returns Promesa que se resuelve con el usuario encontrado o nulo si no existe
+   */
+  getByDocument(document: string): Promise<User> {
+    return this.prisma.user.findUnique({
+      where: {
+        document
       }
     })
   }
