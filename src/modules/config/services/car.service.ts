@@ -78,16 +78,47 @@ export class CarService {
     return this.prisma.car.findMany({
       where: {
         status: true
+      },
+      include: {
+        company: {
+          select: {
+            id: true,
+            code: true,
+            name: true
+          }
+        },
+        type: {
+          select: {
+            id: true,
+            code: true,
+            name: true
+          }
+        }
       }
     })
   }
 
   getCardForId (id:string) {
-    console.log(id)
     return this.prisma.car.findFirst({
       where: {
         status: true,
         id
+      },
+      include: {
+        company: {
+          select: {
+            id: true,
+            code: true,
+            name: true
+          }
+        },
+        type: {
+          select: {
+            id: true,
+            code: true,
+            name: true
+          }
+        }
       }
     })
   }
