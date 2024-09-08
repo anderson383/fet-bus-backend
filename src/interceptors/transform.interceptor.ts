@@ -29,7 +29,7 @@ export class TransformInterceptor<T>
         if (err.response) {
           customError = {
             status: err.status,
-            message: err.response.message,
+            message: err.response,
             data: err.response.error,
           };
         } else {

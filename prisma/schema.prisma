@@ -71,7 +71,7 @@ model ListItem {
   updated_at  DateTime @updatedAt
 
   listType    ListType @relation(name: "ListTypeListItem", fields: [listType_id], references: [id])
-  listType_id String @db.Uuid
+  listType_id String   @db.Uuid
   code        String?  @unique
   name        String
   description String
@@ -98,16 +98,17 @@ model User {
   email        String    @unique
   password     String
   code_student String    @unique
-  rol          Rol      @relation(name: "UserToRol", fields: [rol_id], references: [id])
-  rol_id       String @db.Uuid
+  document     String?    @unique
+  rol          Rol       @relation(name: "UserToRol", fields: [rol_id], references: [id])
+  rol_id       String    @db.Uuid
   phone        String?
   birthdate    DateTime?
   address      String?
   rh           ListItem? @relation(name: "UserToRh", fields: [rh_id], references: [id])
-  rh_id        String? @db.Uuid
+  rh_id        String?   @db.Uuid
 
   program_academic    AcademicProgram? @relation(name: "UserToProgramAcademic", fields: [program_academic_id], references: [id])
-  program_academic_id String? @db.Uuid
+  program_academic_id String?          @db.Uuid
 
   bus_driver BusDriver[] @relation(name: "BusDriverToUser")
   user_qr    UserQR[]    @relation(name: "UserQRToUser")
@@ -126,10 +127,10 @@ model Car {
   updated_at  DateTime @updatedAt
 
   type    ListItem? @relation(name: "CarToType", fields: [type_id], references: [id])
-  type_id String @db.Uuid
+  type_id String    @db.Uuid
 
   bus_driver BusDriver[] @relation(name: "BusDriverToCar")
-  driver_id  String @db.Uuid
+  driver_id  String      @db.Uuid
 
   @@map("tbl_car")
 }
@@ -150,11 +151,11 @@ model BusDriver {
   car    Car?   @relation(name: "BusDriverToCar", fields: [car_id], references: [id])
   car_id String @db.Uuid
 
-  driver    User?   @relation(name: "BusDriverToUser", fields: [driver_id], references: [id])
+  driver    User?  @relation(name: "BusDriverToUser", fields: [driver_id], references: [id])
   driver_id String @db.Uuid
 
   route    CarRoute? @relation(name: "BusDriveCarRoute", fields: [route_id], references: [id])
-  route_id String @db.Uuid
+  route_id String    @db.Uuid
 
   @@map("tbl_bus_driver")
 }
@@ -171,7 +172,7 @@ model UserQR {
   code_qr   String
   status    Boolean
 
-  user    User?   @relation(name: "UserQRToUser", fields: [user_id], references: [id])
+  user    User?  @relation(name: "UserQRToUser", fields: [user_id], references: [id])
   user_id String @db.Uuid
 
   @@map("tbl_user_qr")
@@ -229,12 +230,12 @@ model Transactions {
   amount_per_day Int
 
   type_payment    ListItem? @relation(name: "TransactionToType", fields: [type_payment_id], references: [id])
-  type_payment_id String @db.Uuid
+  type_payment_id String    @db.Uuid
 
-  user    User?   @relation(name: "TransactionToUser", fields: [user_id], references: [id])
+  user    User?  @relation(name: "TransactionToUser", fields: [user_id], references: [id])
   user_id String @db.Uuid
 
-  plan    Plans?  @relation(name: "TransactionToPlan", fields: [plan_id], references: [id])
+  plan    Plans? @relation(name: "TransactionToPlan", fields: [plan_id], references: [id])
   plan_id String @db.Uuid
 
   transaction_plan UserPlan[] @relation(name: "UserPlanActivate")
@@ -255,7 +256,7 @@ model UserPlan {
   date_end   String
 
   transaction    Transactions? @relation(name: "UserPlanActivate", fields: [transaction_id], references: [id])
-  transaction_id String @db.Uuid
+  transaction_id String        @db.Uuid
 
   @@map("tbl_user_plan")
 }

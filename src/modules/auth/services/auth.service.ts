@@ -3,7 +3,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { compare } from 'bcrypt';
-import { AuthDto } from '../dtos/auth.dto';
+import { AuthCreateUserDto, AuthDto } from '../dtos/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
@@ -70,5 +70,9 @@ export class AuthService {
       access_token,
       refresh_token,
     };
+  }
+
+  register (user: AuthCreateUserDto) {
+    return this.userService.createUser(user)
   }
 }

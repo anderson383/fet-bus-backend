@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
-import { AuthDto } from '../dtos/auth.dto';
+import { AuthCreateUserDto, AuthDto } from '../dtos/auth.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('auth')
@@ -22,5 +22,10 @@ export class AuthController {
   })
   async singIn(@Body() user: AuthDto){
     return this.authService.login(user);
+  }
+
+  @Post('register')
+  async singUp(@Body() user: AuthCreateUserDto){
+    return this.authService.register(user);
   }
 }
