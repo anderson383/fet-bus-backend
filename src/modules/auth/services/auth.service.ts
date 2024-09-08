@@ -40,8 +40,8 @@ export class AuthService {
         full_name: findUser.full_name,
         last_name: findUser.last_name,
         code_student: findUser.code_student,
-        rol_id: findUser.rol_id,
-        rh_id: findUser.rh_id,
+        email: findUser.email,
+        rol: findUser.rol.code
       })
 
     } catch (err) {
@@ -49,8 +49,8 @@ export class AuthService {
     }
   }
 
-  async getUserRolesValidated(user: User): Promise<User> {
-    return null
+  getUserRolesValidated(user: User) {
+    return this.userService.getByEmail(user.email);
   }
 
   async validateUserCredentials(

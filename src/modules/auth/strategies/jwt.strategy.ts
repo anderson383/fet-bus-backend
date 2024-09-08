@@ -16,7 +16,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(userPayload: User): Promise<any> {
     const user = await this.authService.getUserRolesValidated(userPayload);
-
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -26,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       last_name: user.last_name,
       code_student: user.code_student,
       email: user.email,
-      rol: user.rol_id
+      rol: user.rol.code
     };
   }
 }

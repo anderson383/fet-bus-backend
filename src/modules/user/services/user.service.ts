@@ -57,10 +57,17 @@ export class UserService {
    * @param email Correo electronico del usuario
    * @returns Promesa que se resuelve con el usuario encontrado o nulo si no existe
    */
-  getByEmail (email: string): Promise<User> {
+  getByEmail (email: string) {
     return this.prisma.user.findUnique({
       where: {
         email
+      },
+      include: {
+        rol: {
+          select: {
+            code: true
+          }
+        }
       }
     })
   }

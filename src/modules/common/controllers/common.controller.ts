@@ -4,7 +4,7 @@ import { ProgramAcademicService } from '../services/program-academic.service';
 import { CommonService } from '../services/common.service';
 
 @Controller('common')
-@ApiTags('Controlador de la autenticación')
+@ApiTags('Controlador de las opciones comunes')
 export class CommonController {
   constructor(
     private readonly programAcademic: ProgramAcademicService,

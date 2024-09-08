@@ -20,6 +20,7 @@ model Rol {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
+  status      Boolean @default(true)
 
   name String?
   code String  @unique
@@ -36,6 +37,7 @@ model AcademicProgram {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
+  status      Boolean @default(true)
 
   name String?
   code String? @unique
@@ -52,6 +54,7 @@ model ListType {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
+  status      Boolean @default(true)
 
   code        String?    @unique
   name        String
@@ -69,6 +72,7 @@ model ListItem {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
+  status      Boolean @default(true)
 
   listType    ListType @relation(name: "ListTypeListItem", fields: [listType_id], references: [id])
   listType_id String   @db.Uuid
@@ -81,6 +85,7 @@ model ListItem {
   users_rol         User[]         @relation(name: "UserToRh")
   car_types         Car[]          @relation(name: "CarToType")
   transactions_type Transactions[] @relation(name: "TransactionToType")
+  company_car       Car[]          @relation(name: "CarToCompany")
 
   @@map("tbl_list_item")
 }
@@ -92,13 +97,14 @@ model User {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
+  status      Boolean @default(true)
 
   full_name    String?
   last_name    String?
   email        String    @unique
   password     String
   code_student String    @unique
-  document     String?    @unique
+  document     String?   @unique
   rol          Rol       @relation(name: "UserToRol", fields: [rol_id], references: [id])
   rol_id       String    @db.Uuid
   phone        String?
@@ -125,12 +131,18 @@ model Car {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
+  status      Boolean @default(true)
+  placa       String?  @unique
+  size        Int?
+  color       String?
 
   type    ListItem? @relation(name: "CarToType", fields: [type_id], references: [id])
   type_id String    @db.Uuid
 
+  company    ListItem? @relation(name: "CarToCompany", fields: [company_id], references: [id])
+  company_id String?   @db.Uuid
+
   bus_driver BusDriver[] @relation(name: "BusDriverToCar")
-  driver_id  String      @db.Uuid
 
   @@map("tbl_car")
 }
@@ -142,6 +154,7 @@ model BusDriver {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
+  status      Boolean @default(true)
 
   name  String?
   placa String
@@ -167,10 +180,11 @@ model UserQR {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
+  status      Boolean @default(true)
 
   date_user DateTime?
   code_qr   String
-  status    Boolean
+  status_qr    Boolean
 
   user    User?  @relation(name: "UserQRToUser", fields: [user_id], references: [id])
   user_id String @db.Uuid
@@ -185,6 +199,7 @@ model CarRoute {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
+  status      Boolean @default(true)
 
   schedule_start DateTime?
   schedule_end   DateTime
@@ -203,6 +218,7 @@ model Plans {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
+  status      Boolean @default(true)
 
   name          String?
   amount_perday Float
@@ -220,9 +236,10 @@ model Transactions {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
+  status      Boolean @default(true)
 
   code         String?
-  status       String
+  status_transaction       String
   date_payment String
 
   amount         Float
@@ -250,8 +267,9 @@ model UserPlan {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
+  status      Boolean @default(true)
 
-  status     String
+  status_plan     String
   date_start String
   date_end   String
 
