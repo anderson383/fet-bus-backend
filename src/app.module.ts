@@ -6,13 +6,15 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { CommonModule } from './modules/common/common.module';
 import { ConfigModule } from './modules/config/config.module';
+import { CarRouteModule } from './modules/car-route/car-route.module';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
     CommonModule,
-    ConfigModule
+    ConfigModule,
+    CarRouteModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
