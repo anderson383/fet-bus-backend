@@ -20,7 +20,7 @@ model Rol {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
-  status      Boolean @default(true)
+  status      Boolean  @default(true)
 
   name String?
   code String  @unique
@@ -37,7 +37,7 @@ model AcademicProgram {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
-  status      Boolean @default(true)
+  status      Boolean  @default(true)
 
   name String?
   code String? @unique
@@ -54,7 +54,7 @@ model ListType {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
-  status      Boolean @default(true)
+  status      Boolean  @default(true)
 
   code        String?    @unique
   name        String
@@ -72,7 +72,7 @@ model ListItem {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
-  status      Boolean @default(true)
+  status      Boolean  @default(true)
 
   listType    ListType @relation(name: "ListTypeListItem", fields: [listType_id], references: [id])
   listType_id String   @db.Uuid
@@ -97,7 +97,7 @@ model User {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
-  status      Boolean @default(true)
+  status      Boolean  @default(true)
 
   full_name    String?
   last_name    String?
@@ -131,7 +131,7 @@ model Car {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
-  status      Boolean @default(true)
+  status      Boolean  @default(true)
   placa       String?  @unique
   size        Int?
   color       String?
@@ -154,13 +154,8 @@ model BusDriver {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
-  status      Boolean @default(true)
-
-  name  String?
-  placa String
-  color String
-  size  Int
-
+  status      Boolean  @default(true)
+  
   car    Car?   @relation(name: "BusDriverToCar", fields: [car_id], references: [id])
   car_id String @db.Uuid
 
@@ -169,6 +164,8 @@ model BusDriver {
 
   route    CarRoute? @relation(name: "BusDriveCarRoute", fields: [route_id], references: [id])
   route_id String    @db.Uuid
+
+  arrived Boolean @default(false)
 
   @@map("tbl_bus_driver")
 }
@@ -180,11 +177,11 @@ model UserQR {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
-  status      Boolean @default(true)
+  status      Boolean  @default(true)
 
   date_user DateTime?
   code_qr   String
-  status_qr    Boolean
+  status_qr Boolean
 
   user    User?  @relation(name: "UserQRToUser", fields: [user_id], references: [id])
   user_id String @db.Uuid
@@ -199,7 +196,7 @@ model CarRoute {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
-  status      Boolean @default(true)
+  status      Boolean  @default(true)
 
   schedule_start DateTime?
   schedule_end   DateTime
@@ -218,7 +215,7 @@ model Plans {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
-  status      Boolean @default(true)
+  status      Boolean  @default(true)
 
   name          String?
   amount_perday Float
@@ -236,11 +233,11 @@ model Transactions {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
-  status      Boolean @default(true)
+  status      Boolean  @default(true)
 
-  code         String?
-  status_transaction       String
-  date_payment String
+  code               String?
+  status_transaction String
+  date_payment       String
 
   amount         Float
   equal_day      Int
@@ -267,11 +264,11 @@ model UserPlan {
   created_at  DateTime @default(now())
   modified_by String?
   updated_at  DateTime @updatedAt
-  status      Boolean @default(true)
+  status      Boolean  @default(true)
 
-  status_plan     String
-  date_start String
-  date_end   String
+  status_plan String
+  date_start  String
+  date_end    String
 
   transaction    Transactions? @relation(name: "UserPlanActivate", fields: [transaction_id], references: [id])
   transaction_id String        @db.Uuid
