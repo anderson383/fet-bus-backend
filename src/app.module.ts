@@ -8,6 +8,7 @@ import { CommonModule } from './modules/common/common.module';
 import { ConfigModule } from './modules/config/config.module';
 import { CarRouteModule } from './modules/car-route/car-route.module';
 import { BusDriverModule } from './modules/bus-driver/bus-driver.module';
+import { PlansModule } from './modules/plans/plans.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { BusDriverModule } from './modules/bus-driver/bus-driver.module';
     CommonModule,
     ConfigModule,
     CarRouteModule,
-    BusDriverModule
+    BusDriverModule,
+    PlansModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
