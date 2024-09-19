@@ -165,7 +165,7 @@ model BusDriver {
   route    CarRoute? @relation(name: "BusDriveCarRoute", fields: [route_id], references: [id])
   route_id String    @db.Uuid
 
-  arrived Boolean @default(false)
+  status_route String @default("stop")
 
   @@map("tbl_bus_driver")
 }
