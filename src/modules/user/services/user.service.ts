@@ -110,4 +110,22 @@ export class UserService {
       }
     })
   }
+
+
+  async findAllDrivers() {
+    const rol = await this.getRolByCode(ROLES.DRIVER_BUS);
+    return this.prisma.user.findMany({
+      where: {
+        rol_id: rol.id,
+        status: true
+      },
+      include: {
+        rol: {
+          select: {
+            name: true
+          }
+        }
+      }
+    })
+  }
 }

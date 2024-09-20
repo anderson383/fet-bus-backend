@@ -21,6 +21,9 @@ export class BusDriverService {
 
     findAll() {
         return this.prisma.busDriver.findMany({
+            where: {
+                status: true
+            },
             include: {
                 driver: {
                     select: {
@@ -85,7 +88,7 @@ export class BusDriverService {
                 driver_id: data.driver_id,
                 car_id: data.car_id,
                 route_id: data.route_id,
-                arrived: data.arrived,
+                status_route: data.status_route,
                 created_at: new Date(),
                 created_by: this._userId,
                 modified_by: this._userId
@@ -104,7 +107,7 @@ export class BusDriverService {
                 driver_id: data.driver_id,
                 car_id: data.car_id,
                 route_id: data.route_id,
-                arrived: data.arrived,
+                status_route: data.status_route,
                 updated_at: new Date(),
                 modified_by: this._userId
             }

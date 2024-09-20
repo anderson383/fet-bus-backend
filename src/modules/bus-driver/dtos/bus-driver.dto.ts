@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsOptional, IsString, IsUUID } from "class-validator";
 
 export class BusDriverCreateDto {
 
@@ -16,9 +16,9 @@ export class BusDriverCreateDto {
     route_id: string;
 
     @IsOptional()
-    @IsBoolean()
-    @ApiProperty({ description: 'Estado de la ruta', example: 'true' })
-    arrived: boolean;
+    @IsString()
+    @ApiProperty({ description: 'Estado de la ruta', example: 'stop' })
+    status_route: string;
 }
 
 

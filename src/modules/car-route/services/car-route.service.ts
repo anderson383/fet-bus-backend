@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException } from "@nestjs/common";
 import { PrismaService } from "src/modules/prisma/prisma.service";
 import { CarRouteCreateDto, CarRouteUpdateDto } from "../dtos/car-route.dto";
+import { CarRouteMapper } from "../dtos/car-route-response.dto";
 
 @Injectable()
 export class CarRouteService {
@@ -11,28 +12,38 @@ export class CarRouteService {
         this._userId = value;
     }
 
-    findAllCarRoutes() {
-        return this.prisma.carRoute.findMany({
+    async findAllCarRoutes() {
+        const routes = await this.prisma.carRoute.findMany({
             where: {
                 status: true
             }
         });
+
+        return routes.map(route => CarRouteMapper.toResponse(route));
     }
 
-    findCarRouteById(id: string) {
-        return this.prisma.carRoute.findFirst({
+    async findCarRouteById(id: string) {
+        const route = await  this.prisma.carRoute.findFirst({
             where: {
                 status: true,
                 id
             }
         });
+
+        if (!route) {
+            throw new BadRequestException('No se encontró la ruta de bus');
+        }
+
+        return CarRouteMapper.toResponse(route);
     }
 
     async createCarRoute(data: CarRouteCreateDto) {
+        const scheduleStart = this.convertToDateTime(data.scheduleStart);
+        const scheduleEnd = this.convertToDateTime(data.scheduleEnd);
         return this.prisma.carRoute.create({
             data: {
-                schedule_start: new Date(data.scheduleStart),
-                schedule_end: new Date(data.scheduleEnd),
+                schedule_start: scheduleStart,
+                schedule_end: scheduleEnd,
                 longitude: data.longitude,
                 lactitude: data.lactitude,
                 order: data.order,
@@ -46,11 +57,13 @@ export class CarRouteService {
     }
 
     updateCarRouteById(id: string, data: CarRouteUpdateDto) {
+        const scheduleStart = this.convertToDateTime(data.scheduleStart);
+        const scheduleEnd = this.convertToDateTime(data.scheduleEnd);
         return this.prisma.carRoute.update({
             where: { id, status: true },
             data: {
-                schedule_start: new Date(data.scheduleStart),
-                schedule_end: new Date(data.scheduleEnd),
+                schedule_start: scheduleStart,
+                schedule_end: scheduleEnd,
                 longitude: data.longitude,
                 lactitude: data.lactitude,
                 order: data.order,
@@ -71,5 +84,10 @@ export class CarRouteService {
                 modified_by: this._userId
             }
         })
+    }
+
+    convertToDateTime(time: string) {
+        const baseDate = '1970-01-01';
+        return new Date(`${baseDate}T${time}:00`)
     }
 }
