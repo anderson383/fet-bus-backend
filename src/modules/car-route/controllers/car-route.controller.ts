@@ -15,16 +15,16 @@ export class CarRouteController {
     @ApiOperation({
         summary: 'Obtener todas las rutas de bus.',
     })
-    getCarRoutes() {
-        return this.carRouteService.findAllCarRoutes();
+    async getCarRoutes() {
+        return await this.carRouteService.findAllCarRoutes();
     }
 
     @Get(':id')
     @ApiOperation({
         summary: 'Obtener una ruta de bus por su id.',
     })
-    getCarRoute(@Param('id') id: string) {
-        return this.carRouteService.findCarRouteById(id);
+    async getCarRoute(@Param('id') id: string) {
+        return await this.carRouteService.findCarRouteById(id);
     }
 
     @Post()

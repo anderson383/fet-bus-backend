@@ -200,8 +200,8 @@ model CarRoute {
 
   schedule_start DateTime?
   schedule_end   DateTime
-  longitude      Int
-  lactitude      Int
+  longitude      Float
+  lactitude      Float
   order          Int
   bus_driver     BusDriver[] @relation(name: "BusDriveCarRoute")
 
