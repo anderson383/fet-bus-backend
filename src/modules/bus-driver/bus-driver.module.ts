@@ -6,9 +6,11 @@ import { CarService } from '../config/services/car.service';
 import { CarRouteService } from '../car-route/services/car-route.service';
 import { DriversController } from './controllers/drivers.controller';
 import { UserService } from '../user/services/user.service';
+import { BusDriverManagerService } from './services/bus-driver-manager.service';
+import { BusDriverManagerController } from './controllers/bus-driver-manager.controller';
 
 @Module({
-  controllers: [BusDriverController, DriversController],
-  providers: [BusDriverService, PrismaService, CarService, CarRouteService, UserService],
+  controllers: [BusDriverController, DriversController, BusDriverManagerController],
+  providers: [BusDriverService, PrismaService, CarService, CarRouteService, UserService, BusDriverManagerService],
 })
 export class BusDriverModule {}

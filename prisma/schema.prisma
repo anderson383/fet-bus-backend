@@ -165,7 +165,10 @@ model BusDriver {
   route    CarRoute? @relation(name: "BusDriveCarRoute", fields: [route_id], references: [id])
   route_id String    @db.Uuid
 
-  status_route String @default("stop")
+  status_route String @default("STOP")
+
+  code_qrs CodeQR[] @relation(name: "BusDriverToCodeQr")
+  
 
   @@map("tbl_bus_driver")
 }
@@ -179,16 +182,33 @@ model UserQR {
   updated_at  DateTime @updatedAt
   status      Boolean  @default(true)
 
-  date_user DateTime?
-  code_qr   String
-  status_qr Boolean
-
+  date_use DateTime?
+  code_qr    CodeQR?  @relation(name: "CodeQrToUserQr", fields: [code_qr_id], references: [id])
+  code_qr_id String @db.Uuid
   user    User?  @relation(name: "UserQRToUser", fields: [user_id], references: [id])
   user_id String @db.Uuid
 
   @@map("tbl_user_qr")
 }
 
+model CodeQR {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // audit_fields
+  created_by  String?
+  created_at  DateTime @default(now())
+  modified_by String?
+  updated_at  DateTime @updatedAt
+  status      Boolean  @default(true)
+
+  date_activate DateTime?
+  date_deactivate DateTime?
+
+  user_qrs UserQR[]  @relation(name: "CodeQrToUserQr")
+  bus_driver    BusDriver?  @relation(name: "BusDriverToCodeQr", fields: [bus_driver_id], references: [id])
+  bus_driver_id String @db.Uuid
+
+  @@map("tbl_code_qr")
+}
 model CarRoute {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   // audit_fields

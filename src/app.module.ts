@@ -9,6 +9,7 @@ import { ConfigModule } from './modules/config/config.module';
 import { CarRouteModule } from './modules/car-route/car-route.module';
 import { BusDriverModule } from './modules/bus-driver/bus-driver.module';
 import { PlansModule } from './modules/plans/plans.module';
+import { StudentModule } from './modules/student/student.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { PlansModule } from './modules/plans/plans.module';
     ConfigModule,
     CarRouteModule,
     BusDriverModule,
-    PlansModule
+    PlansModule,
+    StudentModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

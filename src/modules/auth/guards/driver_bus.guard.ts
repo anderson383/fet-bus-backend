@@ -13,7 +13,6 @@ export class DriverBusGuard implements CanActivate {
     const isAdmin = user.rol === ROLES.ADMIN;
 
     const isDriverBus = user.rol === ROLES.DRIVER_BUS
-
     return isDriverBus
   }
 }
