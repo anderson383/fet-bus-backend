@@ -20,6 +20,7 @@ export class StudentService {
                 user_id: this._userId
             }
         })
+        console.log(find, 'fin')
         if (!find) {
             await this.prisma.userQR.create({
                 data: {
@@ -33,7 +34,20 @@ export class StudentService {
                 }
             })
         } else {
-            throw new BadRequestException('Ya esta registrado')
+            throw new BadRequestException('El qr ya fué registrado', { cause: 'El qr ya fué registrado', description: 'El qr ya fué registrado' })
         }
+    }
+
+    async getActiveBusDriver() {
+        const busDriver = await this.prisma.busDriver.findMany({
+          where: {
+            status: true
+          },
+          include: {
+            route: true,
+            car: true
+          }
+        })
+        return busDriver
     }
 }

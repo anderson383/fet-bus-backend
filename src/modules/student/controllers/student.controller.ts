@@ -21,4 +21,14 @@ export class StudentController{
         this.studentService.userId = req.user.id;
         return this.studentService.savingListDriverForQr(data);
     }
+
+
+    @Post('get-bus-driver')
+    @ApiOperation({
+        summary: 'OBtiene el listado de bus driver activos para los estudiantes',
+    })
+    getBusDriver(@Req() req) {
+        this.studentService.userId = req.user.id;
+        return this.studentService.getActiveBusDriver();
+    }
 }

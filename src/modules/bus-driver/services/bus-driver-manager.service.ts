@@ -32,7 +32,6 @@ export class BusDriverManagerService {
         car: true
       }
     })
-
     return busDriver
   }
 
