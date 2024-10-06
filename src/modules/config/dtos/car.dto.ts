@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsString, IsEmail, IsIn, IsUUID, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 
 export class CarCreateDto {
@@ -27,6 +28,7 @@ export class CarCreateDto {
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({ description: 'Capacidad de pasajeros en número del carro', example: '23' })
+  @Transform(({ value }) => parseInt(value, 10)) 
   size: number;
 }
 

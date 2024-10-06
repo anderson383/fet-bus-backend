@@ -22,7 +22,6 @@ export class CarService {
   }
 
   async createCar (data: CarCreateDto) {
-
     const findCar = await this.getCarForPlaca(data.placa)
 
     if (findCar) {
@@ -36,7 +35,7 @@ export class CarService {
         color: data.color,
         placa: data.placa,
         company_id: data.company,
-        size: data.size,
+        size: Number(data.size),
         type_id: data.type,
         updated_at: new Date(),
       }
