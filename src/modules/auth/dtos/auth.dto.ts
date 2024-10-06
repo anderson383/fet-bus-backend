@@ -55,6 +55,11 @@ export class AuthCreateUserDto {
 
   @IsUUID()
   @IsNotEmpty()
+  @ApiProperty({ description: 'Eps', example: 'id' })
+  eps: string;
+
+  @IsUUID()
+  @IsNotEmpty()
   @ApiProperty({ description: 'Código del programa', example: '' })
   code_program: string;
 }

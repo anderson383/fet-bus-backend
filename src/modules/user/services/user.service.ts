@@ -43,6 +43,7 @@ export class UserService {
           program_academic_id: userData.code_program,
           rol_id: roleStudent.id,
           rh_id: userData.rh,
+          eps_id: userData.eps,
           updated_at: new Date(),
         }
       })

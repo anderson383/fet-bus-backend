@@ -86,6 +86,8 @@ model ListItem {
   car_types         Car[]          @relation(name: "CarToType")
   transactions_type Transactions[] @relation(name: "TransactionToType")
   company_car       Car[]          @relation(name: "CarToCompany")
+  users_eps         User[]         @relation(name: "UserToEps")
+
 
   @@map("tbl_list_item")
 }
@@ -112,6 +114,9 @@ model User {
   address      String?
   rh           ListItem? @relation(name: "UserToRh", fields: [rh_id], references: [id])
   rh_id        String?   @db.Uuid
+
+  eps           ListItem? @relation(name: "UserToEps", fields: [eps_id], references: [id])
+  eps_id        String?   @db.Uuid
 
   program_academic    AcademicProgram? @relation(name: "UserToProgramAcademic", fields: [program_academic_id], references: [id])
   program_academic_id String?          @db.Uuid
