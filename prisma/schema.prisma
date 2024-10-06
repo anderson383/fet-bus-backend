@@ -141,6 +141,10 @@ model Car {
   size        Int?
   color       String?
 
+  tarjeta_de_propietario String?
+  seguro String?
+  seguro_todo_riesgo String?
+  tecnomecanica String?
   type    ListItem? @relation(name: "CarToType", fields: [type_id], references: [id])
   type_id String    @db.Uuid
 
