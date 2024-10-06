@@ -12,7 +12,7 @@ interface FilesDataCar {
   tarjeta_de_propietario: IMulterFile[]
   seguro: IMulterFile[]
   seguro_todo_riesgo: IMulterFile[]
-  licencia_conducir: IMulterFile[]
+  // licencia_conducir: IMulterFile[]
   tecnomecanica: IMulterFile[]
 }
 
@@ -28,7 +28,7 @@ export class CarController {
       { name: 'tarjeta_de_propietario', maxCount: 1 },
       { name: 'seguro', maxCount: 1 },
       { name: 'seguro_todo_riesgo', maxCount: 1 },
-      { name: 'licencia_conducir', maxCount: 1 },
+      // { name: 'licencia_conducir', maxCount: 1 },
       { name: 'tecnomecanica', maxCount: 1 },
     ])
     // FileInterceptor('file'), FilesInterceptor('files')
@@ -52,9 +52,9 @@ export class CarController {
     if (!files.seguro_todo_riesgo || files.seguro_todo_riesgo.length === 0) {
       throw new BadRequestException('El archivo "seguro todo riesgo" es obligatorio.');
     }
-    if (!files.licencia_conducir || files.licencia_conducir.length === 0) {
-      throw new BadRequestException('El archivo "licencia de conducir" es obligatorio.');
-    }
+    // if (!files.licencia_conducir || files.licencia_conducir.length === 0) {
+    //   throw new BadRequestException('El archivo "licencia de conducir" es obligatorio.');
+    // }
     if (!files.tecnomecanica || files.tecnomecanica.length === 0) {
       throw new BadRequestException('El archivo "tecnomecánica" es obligatorio.');
     }
