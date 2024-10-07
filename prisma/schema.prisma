@@ -176,6 +176,8 @@ model BusDriver {
 
   status_route String @default("STOP")
 
+  license String?
+
   code_qrs CodeQR[] @relation(name: "BusDriverToCodeQr")
   
 
