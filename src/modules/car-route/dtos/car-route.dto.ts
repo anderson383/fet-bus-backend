@@ -3,6 +3,11 @@ import { IsNotEmpty, IsNumber } from "class-validator";
 import { IsTimeString } from "../validators/is-time-string.validator";
 
 export class CarRouteCreateDto {
+
+    @IsNotEmpty()
+    @ApiProperty({ description: 'Nombre de la ruta', example: 'Ruta 1' })
+    name: string;
+
     @IsNotEmpty()
     @IsTimeString()
     @ApiProperty({ description: 'Fecha de inicio de la ruta', example: '08:30'  })

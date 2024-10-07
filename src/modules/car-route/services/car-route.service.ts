@@ -42,6 +42,7 @@ export class CarRouteService {
         const scheduleEnd = this.convertToDateTime(data.scheduleEnd);
         return this.prisma.carRoute.create({
             data: {
+                name: data.name,
                 schedule_start: scheduleStart,
                 schedule_end: scheduleEnd,
                 longitude: data.longitude,
@@ -62,6 +63,7 @@ export class CarRouteService {
         return this.prisma.carRoute.update({
             where: { id, status: true },
             data: {
+                name: data.name,
                 schedule_start: scheduleStart,
                 schedule_end: scheduleEnd,
                 longitude: data.longitude,

@@ -39,6 +39,7 @@ export class BusDriverService {
                 },
                 route: {
                     select: {
+                        name: true,
                         schedule_start: true,
                         schedule_end: true,
 
@@ -69,6 +70,7 @@ export class BusDriverService {
                 },
                 route: {
                     select: {
+                        name: true,
                         schedule_start: true,
                         schedule_end: true,
 

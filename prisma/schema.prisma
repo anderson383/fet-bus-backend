@@ -227,6 +227,7 @@ model CarRoute {
   updated_at  DateTime @updatedAt
   status      Boolean  @default(true)
 
+  name           String @default("Ruta")
   schedule_start DateTime?
   schedule_end   DateTime
   longitude      Float
