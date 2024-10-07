@@ -176,6 +176,8 @@ model BusDriver {
 
   status_route String @default("STOP")
 
+  license String?
+
   code_qrs CodeQR[] @relation(name: "BusDriverToCodeQr")
   
 
@@ -227,6 +229,7 @@ model CarRoute {
   updated_at  DateTime @updatedAt
   status      Boolean  @default(true)
 
+  name           String @default("Ruta")
   schedule_start DateTime?
   schedule_end   DateTime
   longitude      Float

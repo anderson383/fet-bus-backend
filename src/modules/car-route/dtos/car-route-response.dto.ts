@@ -4,6 +4,9 @@ export class CarRouteResponseDto {
     @ApiProperty({ description: 'Id de la ruta de bus', example: '1' })
     id: string;
 
+    @ApiProperty({ description: 'Nombre de la ruta', example: 'Ruta 1' })
+    name: string;
+
     @ApiProperty({ description: 'Fecha de inicio de la ruta', example: '08:30'  })
     scheduleStart: string;
 
@@ -31,6 +34,7 @@ export class CarRouteMapper {
 
         return {
             id: route.id,
+            name: route.name,
             scheduleStart: formatTime(route.schedule_start),
             scheduleEnd: formatTime(route.schedule_end),
             longitude: route.longitude,

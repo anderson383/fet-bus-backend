@@ -4,6 +4,8 @@ import { BusDriverCreateDto, BusDriverUpdateDto } from '../dtos/bus-driver.dto';
 import { ROLES } from 'src/constants/roles';
 import { CarService } from 'src/modules/config/services/car.service';
 import { CarRouteService } from 'src/modules/car-route/services/car-route.service';
+import { FilesDataBusDriver } from '../controllers/bus-driver.controller';
+import { S3Service } from 'src/modules/common/services/aws-s3.service';
 
 
 @Injectable()
@@ -12,7 +14,8 @@ export class BusDriverService {
     constructor(
         private prisma: PrismaService,
         private carService: CarService,
-        private carRouteService: CarRouteService
+        private carRouteService: CarRouteService,
+        private s3Service: S3Service
     ) { }
 
     set userId(value: string) {
@@ -39,6 +42,7 @@ export class BusDriverService {
                 },
                 route: {
                     select: {
+                        name: true,
                         schedule_start: true,
                         schedule_end: true,
 
@@ -69,6 +73,7 @@ export class BusDriverService {
                 },
                 route: {
                     select: {
+                        name: true,
                         schedule_start: true,
                         schedule_end: true,
 
@@ -78,12 +83,12 @@ export class BusDriverService {
         })
     }
 
-    async create(data: BusDriverCreateDto) {
+    async create(data: BusDriverCreateDto, files: FilesDataBusDriver) {
         await this.validateDriver(data.driver_id);
         await this.validateCar(data.car_id);
         await this.validateRoute(data.route_id);
         
-        return this.prisma.busDriver.create({
+        const busDriver = await this.prisma.busDriver.create({
             data: {
                 driver_id: data.driver_id,
                 car_id: data.car_id,
@@ -94,12 +99,35 @@ export class BusDriverService {
                 modified_by: this._userId
             }
         });
+
+        if(busDriver) {
+            const urlLicense = await this.s3Service.uploadFile(files.license[0], 'drivers-documents/' + busDriver.id + '/');
+    
+            const busDriverUpdate = await this.prisma.busDriver.update({
+                where: { id: busDriver.id },
+                data: {
+                    license: urlLicense,
+                }
+            });
+            return busDriverUpdate;
+        }
     }
 
-    async update(id: string, data: BusDriverUpdateDto) {
+    async update(id: string, data: BusDriverUpdateDto, files: FilesDataBusDriver) {
         await this.validateDriver(data.driver_id);
         await this.validateCar(data.car_id);
         await this.validateRoute(data.route_id);
+
+        const documentTypes = ['license'];
+
+        const updateFiles: any = {};
+
+        for (const docType of documentTypes) {
+            if (files[docType] && files[docType].length){
+                const url = await this.s3Service.uploadFile(files[docType][0], 'drivers-documents/' + id + '/');
+                updateFiles[docType] = url ? url : null;
+            }
+        }
         
         return this.prisma.busDriver.update({
             where: { status: true, id },
@@ -109,7 +137,8 @@ export class BusDriverService {
                 route_id: data.route_id,
                 status_route: data.status_route,
                 updated_at: new Date(),
-                modified_by: this._userId
+                modified_by: this._userId,
+                ...updateFiles
             }
         });
     }

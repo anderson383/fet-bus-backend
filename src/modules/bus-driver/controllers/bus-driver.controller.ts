@@ -1,9 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseFilePipe, Post, Put, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 import { BusDriverService } from '../services/bus-driver.service';
 import { BusDriverCreateDto, BusDriverUpdateDto } from '../dtos/bus-driver.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AdminGuard } from 'src/modules/auth/guards/admin.guard';
+import { IMulterFile } from 'src/types/multer';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { FileTypeValidator } from 'src/constants/validators/file-validator';
+
+export interface FilesDataBusDriver {
+    license: IMulterFile[]
+}
 
 @Controller('bus-driver')
 @ApiTags('Controlador de conductores de autobuses')
@@ -28,21 +35,59 @@ export class BusDriverController {
     }
 
     @Post()
+    @UseInterceptors(
+        FileFieldsInterceptor([
+            { name: 'license', maxCount: 1 }
+        ])
+    )
     @ApiOperation({
         summary: 'Crear un nuevo conductor de autobús.',
     })
-    createBusDriver(@Body() data: BusDriverCreateDto, @Req() req) {
+    createBusDriver(
+        @UploadedFiles(
+            new ParseFilePipe({
+                fileIsRequired: true,
+                validators: [
+                    new FileTypeValidator({ multiple: true, filetype: 'application/pdf' })
+                ]
+            })
+        )
+        files: FilesDataBusDriver,
+        @Body() data: BusDriverCreateDto,
+        @Req() req
+    ) {
+        if (!files.license || files.license.length === 0) {
+            throw new BadRequestException('El archivo "licencia" es obligatorio.');
+        }
         this.busDriverService.userId = req.user.id;
-        return this.busDriverService.create(data);
+        return this.busDriverService.create(data, files);
     }
 
     @Put(':id')
+    @UseInterceptors(
+        FileFieldsInterceptor([
+            { name: 'license', maxCount: 1 }
+        ])
+    )
     @ApiOperation({
         summary: 'Actualizar un conductor de autobús por su id.',
     })
-    updateBusDriver(@Param('id') id: string, @Body() data: BusDriverUpdateDto, @Req() req) {
+    updateBusDriver(
+        @UploadedFiles(
+            new ParseFilePipe({
+                fileIsRequired: true,
+                validators: [
+                    new FileTypeValidator({ multiple: true, filetype: 'application/pdf' }),
+                ]
+            })
+        )
+        files: FilesDataBusDriver,
+        @Param('id') id: string,
+        @Body() data: BusDriverUpdateDto,
+        @Req() req
+    ) {
         this.busDriverService.userId = req.user.id;
-        return this.busDriverService.update(id, data);
+        return this.busDriverService.update(id, data, files);
     }
 
     @Delete(':id')
