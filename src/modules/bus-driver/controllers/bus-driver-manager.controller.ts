@@ -24,4 +24,10 @@ export class BusDriverManagerController {
         this.busDriverService.userId = req.user.id;
         return this.busDriverService.getAssingedBusDriver();
     }
+
+    @Get('get-users-register/:id')
+    getUsersRegister(@Param('id') id: string, @Req() req) {
+        this.busDriverService.userId = req.user.id;
+        return this.busDriverService.getUsersRegister(id);
+    }
 }

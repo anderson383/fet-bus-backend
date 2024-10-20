@@ -11,7 +11,9 @@ import { BusDriverModule } from './modules/bus-driver/bus-driver.module';
 import { PlansModule } from './modules/plans/plans.module';
 import { StudentModule } from './modules/student/student.module';
 import { ConfigModule } from '@nestjs/config';
+import { EventsGateway } from './events/events.gateway';
 import * as Joi from 'joi';
+import { EventsModule } from './events/events.module';
 
 
 @Module({
@@ -30,9 +32,10 @@ import * as Joi from 'joi';
     CarRouteModule,
     BusDriverModule,
     PlansModule,
-    StudentModule
+    StudentModule,
+    EventsModule
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, EventsGateway],
 })
 export class AppModule {}

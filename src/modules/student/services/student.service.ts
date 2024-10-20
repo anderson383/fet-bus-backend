@@ -1,12 +1,14 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { CreateListQrDto } from '../dtos/student.dto';
+import { EventsGateway } from 'src/events/events.gateway';
 
 @Injectable()
 export class StudentService {
     private _userId: string;
     constructor(
-        private prisma: PrismaService
+        private prisma: PrismaService,
+        private readonly eventsGateway: EventsGateway
     ) { }
 
     set userId(value: string) {
@@ -20,7 +22,6 @@ export class StudentService {
                 user_id: this._userId
             }
         })
-        console.log(find, 'fin')
         if (!find) {
             await this.prisma.userQR.create({
                 data: {
@@ -33,6 +34,8 @@ export class StudentService {
                     modified_by: this._userId
                 }
             })
+            console.log('enmitir mensaje')
+            this.eventsGateway.server.emit('message', 'ACTUALIZAR');
         } else {
             throw new BadRequestException('El qr ya fué registrado', { cause: 'El qr ya fué registrado', description: 'El qr ya fué registrado' })
         }

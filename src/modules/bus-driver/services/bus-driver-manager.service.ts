@@ -34,6 +34,17 @@ export class BusDriverManagerService {
     })
     return busDriver
   }
+  async getUsersRegister (idCodeQR : string) {
+    const busDriver = await this.prisma.userQR.findMany({
+      where: {
+        code_qr_id: idCodeQR
+      },
+      include: {
+        user: true
+      }
+    })
+    return busDriver
+  }
 
   async updateStatusDriver(data: BusDriverUpdateStatusDto) {
     const busDriver = await this.busDriverService.findOne(data.bus_driver_id)
@@ -45,20 +56,30 @@ export class BusDriverManagerService {
           status_route: data.status,
         }
       });
-      
+      console.log(dataSaving)
       if (dataSaving.status_route === BUS_DRIVER_STATUS.PICKING) {
-        const dataCodeQR = await this.prisma.codeQR.create({
-          data: {
-            status: true,
-            modified_by: this._userId,
-            created_by: this._userId,
-            date_activate: new Date(),
-            updated_at: new Date(),
-            date_deactivate: null,
-            bus_driver_id: dataSaving.id,
-            created_at: new Date()
+        const codeQr = await this.prisma.codeQR.findFirst({
+          where: {
+            bus_driver_id: busDriver.id
           }
         })
+        let dataCodeQR:any = {}
+        if (!codeQr) {
+          dataCodeQR = await this.prisma.codeQR.create({
+            data: {
+              status: true,
+              modified_by: this._userId,
+              created_by: this._userId,
+              date_activate: new Date(),
+              updated_at: new Date(),
+              date_deactivate: null,
+              bus_driver_id: dataSaving.id,
+              created_at: new Date()
+            }
+          })
+        }  else {
+          dataCodeQR = codeQr
+        }
         return {
           id: dataCodeQR.id,
           date_activate: dataCodeQR.date_activate
