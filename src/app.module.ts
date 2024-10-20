@@ -14,10 +14,13 @@ import { ConfigModule } from '@nestjs/config';
 import { EventsGateway } from './events/events.gateway';
 import * as Joi from 'joi';
 import { EventsModule } from './events/events.module';
+import { PaymentsModule } from './modules/payments/payment.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -33,7 +36,8 @@ import { EventsModule } from './events/events.module';
     BusDriverModule,
     PlansModule,
     StudentModule,
-    EventsModule
+    EventsModule,
+    PaymentsModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, EventsGateway],

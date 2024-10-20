@@ -72,9 +72,9 @@ export class BusDriverManagerService {
               created_by: this._userId,
               date_activate: new Date(),
               updated_at: new Date(),
+              created_at: new Date(),
               date_deactivate: null,
               bus_driver_id: dataSaving.id,
-              created_at: new Date()
             }
           })
         }  else {

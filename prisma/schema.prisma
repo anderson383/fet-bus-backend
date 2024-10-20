@@ -84,7 +84,6 @@ model ListItem {
 
   users_rol         User[]         @relation(name: "UserToRh")
   car_types         Car[]          @relation(name: "CarToType")
-  transactions_type Transactions[] @relation(name: "TransactionToType")
   company_car       Car[]          @relation(name: "CarToCompany")
   users_eps         User[]         @relation(name: "UserToEps")
 
@@ -267,16 +266,14 @@ model Transactions {
   updated_at  DateTime @updatedAt
   status      Boolean  @default(true)
 
-  code               String?
-  status_transaction String
-  date_payment       String
+  reference         String  @unique
+  referenceProvider String?          @unique
+  mount             Float
+  quantity          Int
+  statusTransaction String
 
-  amount         Float
   equal_day      Int
   amount_per_day Int
-
-  type_payment    ListItem? @relation(name: "TransactionToType", fields: [type_payment_id], references: [id])
-  type_payment_id String    @db.Uuid
 
   user    User?  @relation(name: "TransactionToUser", fields: [user_id], references: [id])
   user_id String @db.Uuid
@@ -298,9 +295,9 @@ model UserPlan {
   updated_at  DateTime @updatedAt
   status      Boolean  @default(true)
 
-  status_plan String
-  date_start  String
-  date_end    String
+  status_plan Boolean
+  date_start  DateTime
+  date_end    DateTime
 
   transaction    Transactions? @relation(name: "UserPlanActivate", fields: [transaction_id], references: [id])
   transaction_id String        @db.Uuid
