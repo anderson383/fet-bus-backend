@@ -38,6 +38,16 @@ export class BusDriverService {
                     select: {
                         placa: true,
                         color: true,
+                        company: {
+                            select: {
+                                name: true
+                            }
+                        },
+                        type: {
+                            select: {
+                                name: true
+                            }
+                        },
                     }
                 },
                 route: {
@@ -69,6 +79,16 @@ export class BusDriverService {
                     select: {
                         placa: true,
                         color: true,
+                        company: {
+                            select: {
+                                name: true
+                            }
+                        },
+                        type: {
+                            select: {
+                                name: true
+                            }
+                        },
                     }
                 },
                 route: {
