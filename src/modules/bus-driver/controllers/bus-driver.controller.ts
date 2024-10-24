@@ -75,7 +75,7 @@ export class BusDriverController {
     updateBusDriver(
         @UploadedFiles(
             new ParseFilePipe({
-                fileIsRequired: true,
+                fileIsRequired: false,
                 validators: [
                     new FileTypeValidator({ multiple: true, filetype: 'application/pdf' }),
                 ]
