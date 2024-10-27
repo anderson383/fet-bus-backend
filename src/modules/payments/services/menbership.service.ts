@@ -6,7 +6,7 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 export class MembershipService {
   constructor(private prisma: PrismaService) {}
 
-  @Cron(CronExpression.EVERY_12_HOURS)
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async updateExpiredPlans() {
     const today = new Date();
     await this.prisma.userPlan.updateMany({

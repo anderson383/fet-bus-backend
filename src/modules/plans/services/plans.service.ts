@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreatePlanDto } from '../dto/create-plan.dto';
 import { UpdatePlanDto } from '../dto/update-plan.dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { addBusinessDays, newDateTz } from 'src/constants/format-dates';
+import { STATUS_TRANSACTION } from 'src/constants/status';
 
 @Injectable()
 export class PlansService {
@@ -14,6 +16,20 @@ export class PlansService {
 
   constructor(private prisma: PrismaService) { }
 
+  createPlanForEstudent(user_id: string, transaction: any) {
+    return this.prisma.userPlan.create({
+      data: {
+        status_plan: true,
+        created_at: new Date(),
+        transaction_id: transaction.id,
+        user_id: user_id,
+        updated_at: new Date(),
+        status: true,
+        date_start: new Date(),
+        date_end: addBusinessDays(new Date(), Number(transaction.plan.equals_day)),
+      }
+    })
+  }
   create(createPlanDto: CreatePlanDto) {
     return this.prisma.plans.create({
       data: {
@@ -24,6 +40,19 @@ export class PlansService {
         equals_day: createPlanDto.equals_day,
       }
     });
+  }
+
+  findOneActiveForUser () {
+    return this.prisma.userPlan.findFirst({
+      where: {
+        status: true,
+        status_plan: true,
+        user_id: this._userId,
+        transaction: {
+          statusTransaction: STATUS_TRANSACTION.APPROVED
+        }
+      }
+    })
   }
 
   findAll() {

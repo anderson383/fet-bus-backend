@@ -41,7 +41,8 @@ export class AuthService {
         last_name: findUser.last_name,
         code_student: findUser.code_student,
         email: findUser.email,
-        rol: findUser.rol.code
+        rol: findUser.rol.code,
+        active_plan: findUser.plans.length > 0 ? findUser.plans[0] : null
       })
 
     } catch (err) {

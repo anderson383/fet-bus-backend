@@ -1,18 +1,21 @@
+import { STATUS_TRANSACTION } from './../../../constants/status';
 import { Injectable } from '@nestjs/common';
 // import { TransactionEntity } from '../../entity/transaction.entity';
 // import { TransactionDao } from 'src/domain/ports/billing/dao/transaction.dao';
-import { STATUS_TRANSACTION } from 'src/constants/status';
 import { Transaction } from '../types/transaction';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { Plans } from '@prisma/client';
-
+import * as crypto from 'crypto';
+import axios, { AxiosHeaders, RawAxiosRequestHeaders } from 'axios';
 
 
 @Injectable()
 export class TransactionService {
   public reference: string = '';
   private providerIntegrity: string;
+  private providerKey:string;
+  private headers: (RawAxiosRequestHeaders) | AxiosHeaders;
   private mount:number;
   private quantity: number;
   private signature: string = '';
@@ -25,7 +28,11 @@ export class TransactionService {
     
     // private transactionDao:TransactionDao
   ) {
+    this.providerKey = 'pub_stagtest_g2u0HQd3ZMh05hsSgTS2lUV8t3s4mOt7'
     this.providerIntegrity = 'stagtest_integrity_nAIBuqayW70XpUqJS4qf4STYiISd89Fp';
+    this.headers = {
+      Authorization: `Bearer ` + this.providerKey
+    }
   }
 
   
@@ -53,6 +60,26 @@ export class TransactionService {
     if (!result) return null;
   
     return new Transaction(result.id, result.reference, result.statusTransaction, result.quantity);
+  }
+
+  async getTransactionForRerence(reference: string) {
+    const result = await this.prisma.transactions.findUnique({
+      where: { reference, transaction_plan: { none : {} } },
+      include: {
+        plan: true
+      }
+    });
+  
+    if (!result) return null;
+  
+    return result
+  }
+
+  updateTransaction(id: string, status: string) {
+    return this.prisma.transactions.update({
+      where: { id },
+      data: { statusTransaction: status },
+    });
   }
   
 
@@ -108,6 +135,19 @@ export class TransactionService {
   
     // Retornamos una instancia de la clase Transaction
     return new Transaction(result.id, result.reference, result.statusTransaction, result.quantity);
+  }
+
+  async validTransaction(transactionId): Promise<any> {
+    try {
+      const { data: { data } } = await axios.get(`https://api-sandbox.co.uat.wompi.dev/v1/transactions/${transactionId}`,
+        { headers: { ...this.headers } }
+      )
+
+      return data
+    } catch(err) {
+      console.error(err)
+      throw new Error(err.response.data.error)
+    }
   }
 
   // async updateTransaction(id:string, updateData: UpdateTransactionData):Promise<Transaction> {

@@ -64,6 +64,12 @@ export class UserService {
         email
       },
       include: {
+        plans: {
+          where: {
+            status_plan: true
+          },
+          take: 1
+        },
         rol: {
           select: {
             code: true

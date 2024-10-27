@@ -123,6 +123,8 @@ model User {
   bus_driver BusDriver[] @relation(name: "BusDriverToUser")
   user_qr    UserQR[]    @relation(name: "UserQRToUser")
 
+  plans UserPlan[] @relation(name: "TransactionToPlan")
+
   transaction_user Transactions[] @relation(name: "TransactionToUser")
 
   @@map("tbl_user")
@@ -298,6 +300,9 @@ model UserPlan {
   status_plan Boolean
   date_start  DateTime
   date_end    DateTime
+
+  user    User?  @relation(name: "TransactionToPlan", fields: [user_id], references: [id])
+  user_id String @db.Uuid
 
   transaction    Transactions? @relation(name: "UserPlanActivate", fields: [transaction_id], references: [id])
   transaction_id String        @db.Uuid
