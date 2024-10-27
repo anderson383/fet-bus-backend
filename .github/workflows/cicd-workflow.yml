@@ -31,4 +31,4 @@ jobs:
       - name: Delete old container
         run: docker rm -f bus-fet-app
       - name: Run docker container
-        run: docker run -d -p 3000:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL }} -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} --name bus-fet-app anderson383/bus-fet-backend
+        run: docker run -d -p 3000:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL }} -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} --name bus-fet-app anderson383/bus-fet-backend --memory=6g --cpus=1 my_image
