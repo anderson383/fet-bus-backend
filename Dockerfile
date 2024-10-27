@@ -1,5 +1,5 @@
 # Etapa 1: Dependencias
-FROM node:18-alpine3.15 AS deps
+FROM node:20  AS deps
 WORKDIR /app
 
 # Copiar package.json y package-lock.json para instalar las dependencias de desarrollo
@@ -7,7 +7,7 @@ COPY package.json package-lock.json ./
 RUN npm install --only=dev  # Solo instalar dependencias de desarrollo
 
 # Etapa 2: Construcción
-FROM node:18-alpine3.15 AS builder
+FROM node:20  AS builder
 WORKDIR /app
 
 # Copiar dependencias desde la etapa anterior
@@ -31,7 +31,7 @@ RUN npm run prisma:generate-migrate
 RUN npm run build
 
 # Etapa 3: Imagen de producción
-FROM node:18-alpine3.15 AS runner
+FROM node:20  AS runner
 WORKDIR /app
 
 # Copiar solo las dependencias necesarias para producción
