@@ -17,6 +17,18 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copiar el resto del código fuente
 COPY . .
 
+# Recibir variables de entorno como argumentos de build
+ARG DATABASE_URL
+ARG NODE_ENV
+
+ARG DATABASE_URL
+ARG AWS_ACCESS_KEY
+ARG AWS_SECRET_ACCESS_KEY
+
+ENV DATABASE_URL=$DATABASE_URL
+ENV AWS_ACCESS_KEY=$AWS_ACCESS_KEY
+ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+
 # Generar Prisma Client y construir la aplicación
 RUN npm run prisma:generate-migrate
 RUN npm run build
@@ -39,7 +51,7 @@ COPY package.json package-lock.json ./
 COPY prisma ./prisma
 RUN npm run prisma:generate-migrate
 
-COPY .env .env
+#COPY .env .env
 
 # Exponer el puerto de la aplicación (ajústalo si es necesario)
 EXPOSE 3000
