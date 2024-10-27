@@ -23,10 +23,10 @@ import { ScheduleModule } from '@nestjs/schedule';
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
-      validationSchema: Joi.object({
-        AWS_ACCESS_KEY:Joi.string().required(),
-        AWS_SECRET_ACCESS_KEY: Joi.string().required(),
-      })
+      // validationSchema: Joi.object({
+      //   AWS_ACCESS_KEY:Joi.string().required(),
+      //   AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+      // })
     }),
     AuthModule,
     UserModule,
