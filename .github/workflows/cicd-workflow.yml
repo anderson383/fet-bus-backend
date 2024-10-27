@@ -13,7 +13,8 @@ jobs:
       - name: Login to docker hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} 
       - name: Build docker image
-        run: docker build \
+        run: |
+          docker buildx build \
           --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} \
           --build-arg AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
           --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
