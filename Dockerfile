@@ -49,8 +49,15 @@ COPY package.json package-lock.json ./
 # Copiar los archivos de Prisma para que pueda ejecutarse en producción (si tienes un esquema)
 
 COPY prisma ./prisma
+
+
 RUN npm run prisma:generate-migrate
 
+
+ENV DATABASE_URL=$DATABASE_URL \
+    AWS_ACCESS_KEY=$AWS_ACCESS_KEY \
+    AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+    
 #COPY .env .env
 
 # Exponer el puerto de la aplicación (ajústalo si es necesario)
