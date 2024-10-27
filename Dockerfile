@@ -1,11 +1,10 @@
 # Etapa 1: Dependencias
 FROM node:18-alpine3.15 AS deps
-# RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copiar package.json y package-lock.json para instalar las dependencias
+# Copiar package.json y package-lock.json para instalar las dependencias de desarrollo
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install --only=dev  # Solo instalar dependencias de desarrollo
 
 # Etapa 2: Construcción
 FROM node:18-alpine3.15 AS builder
@@ -20,8 +19,6 @@ COPY . .
 # Recibir variables de entorno como argumentos de build
 ARG DATABASE_URL
 ARG NODE_ENV
-
-ARG DATABASE_URL
 ARG AWS_ACCESS_KEY
 ARG AWS_SECRET_ACCESS_KEY
 
@@ -37,8 +34,8 @@ RUN npm run build
 FROM node:18-alpine3.15 AS runner
 WORKDIR /app
 
-# Copiar todas las dependencias (desarrollo y producción) desde deps
-COPY --from=deps /app/node_modules ./node_modules
+# Copiar solo las dependencias necesarias para producción
+COPY --from=builder /app/node_modules ./node_modules
 
 # Copiar el build generado
 COPY --from=builder /app/dist ./dist
@@ -46,19 +43,14 @@ COPY --from=builder /app/dist ./dist
 # Copiar el package.json y el package-lock.json para el contexto de ejecución
 COPY package.json package-lock.json ./
 
-# Copiar los archivos de Prisma para que pueda ejecutarse en producción (si tienes un esquema)
-
+# Copiar los archivos de Prisma para que pueda ejecutarse en producción
 COPY prisma ./prisma
 
-
 RUN npm run prisma:generate-migrate
-
 
 ENV DATABASE_URL=$DATABASE_URL \
     AWS_ACCESS_KEY=$AWS_ACCESS_KEY \
     AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-    
-#COPY .env .env
 
 # Exponer el puerto de la aplicación (ajústalo si es necesario)
 EXPOSE 3000
