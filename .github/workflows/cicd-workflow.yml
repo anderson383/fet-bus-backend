@@ -1,0 +1,34 @@
+name: CICD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} 
+      - name: Build docker image
+        run: |
+          docker buildx build \
+          --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} \
+          --build-arg AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
+          --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+          -t anderson383/bus-fet-backend .
+      - name: Publish image to docker hub
+        run: docker push anderson383/bus-fet-backend:latest
+        
+  deploy:
+    needs: build
+    runs-on: [aws-ec2]
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull anderson383/bus-fet-backend:latest 
+      - name: Delete old container
+        run: docker rm -f bus-fet-app
+      - name: Run docker container
+        run: docker run -d -p 3000:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL }} -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} --name bus-fet-app --memory=30g --cpus=1 anderson383/bus-fet-backend
