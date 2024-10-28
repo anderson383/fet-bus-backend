@@ -104,7 +104,7 @@ model User {
   last_name    String?
   email        String    @unique
   password     String
-  code_student String    @unique
+  code_student String?    @unique
   document     String?   @unique
   rol          Rol       @relation(name: "UserToRol", fields: [rol_id], references: [id])
   rol_id       String    @db.Uuid
